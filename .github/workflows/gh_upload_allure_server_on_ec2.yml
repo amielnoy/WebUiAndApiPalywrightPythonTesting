@@ -42,7 +42,7 @@ jobs:
         pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Install all Playwright Browsers
+    - name: Install only Playwright chrome browsers
       run: |
         source .venv/bin/activate
         python -m playwright install --with-deps chromium
