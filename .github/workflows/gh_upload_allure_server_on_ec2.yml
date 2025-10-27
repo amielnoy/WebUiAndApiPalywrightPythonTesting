@@ -65,7 +65,7 @@ jobs:
     - name: Run tests(UI & API) with Pytest
       run: |
         source .venv/bin/activate
-        pytest Ultimateqa/ui_tests api_tests -n auto --alluredir=allure-results
+        pytest pytest -n auto --alluredir=allure-results
 
     - name: Generate Allure Report
       if: always()
