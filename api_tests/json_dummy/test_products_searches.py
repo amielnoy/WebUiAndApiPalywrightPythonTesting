@@ -1,8 +1,5 @@
-from engineio.payload import Payload
-
 from api_tests.globals import ApiHttpConstants
 from api_tests.json_dummy.products_service import products_requests
-
 
 def test_get_products_by_query(api_json_dummy):
     pr=products_requests()

@@ -1,5 +1,3 @@
-from engineio.payload import Payload
-
 from api_tests.globals import ApiHttpConstants
 from api_tests.json_dummy.products_service import products_requests
 
