@@ -1,5 +1,3 @@
-from api_tests.globals import ApiHttpConstants
-import requests
 from typing import Any, Dict, Optional, Tuple
 
 class products_requests():
@@ -10,56 +8,64 @@ class products_requests():
     def get_product_by_number(self,api,product_number):
         response = api.get("posts/"+product_number)
         return response
-    def create_post(self,api,payload):
-        response = api.post("posts", data=payload)
+    def create_product(self, api, payload):
+        response = api.post("products/add", data=payload)
         return response
 
-    def update_post(self,api,payload):
-        response = api.put("posts/1", data=payload)
+    def update_product(self, api, payload,product_number):
+        response = api.put(f"posts/{product_number}", data=payload)
         return response
 
-    def delete_post(self,api,post_number):
+    def delete_product(self, api, post_number):
         response = api.delete("posts/"+post_number)
         return response
 
-DUMMYJSON_BASE = "https://dummyjson.com"
+    def get_products_by_query(self,api,query):
+        response = api.get("products/search?q="+query)
+        return response
 
-def login_and_get_tokens(
-    username: str,
-    password: str,
-    expires_in_mins: Optional[int] = 60,
-    base_url: str = DUMMYJSON_BASE,
-) -> Tuple[Dict[str, Any], requests.Session]:
-    """
-    Logs in to DummyJSON and returns (response_json, session) where:
-      - response_json: parsed JSON including accessToken/refreshToken, etc.
-      - session: a requests.Session with cookies set (credentials included)
-    """
-    session = requests.Session()
+    def filter_products_by_price(self, api, limit: str, skip: str, query: str = None):
+            """
+            Filter products by price range using DummyJSON's /products/filter endpoint.
+            Optionally include a search query 'q' to combine title/description search with price range.
 
-    url = f"{base_url}/auth/login"
-    payload = {
-        "username": username,
-        "password": password,
-    }
-    if expires_in_mins is not None:
-        payload["expiresInMins"] = expires_in_mins
+            Args:
+                api: APIClient instance (from your fixtures) exposing .get(path: str)
+                min_price: minimum price (inclusive)
+                max_price: maximum price (inclusive)
+                query: optional free-text search term
 
-    headers = {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-    }
+            Returns:
+                API response object
+            """
+            path = f"products?limit={limit}&skip={skip}"
+            if query:
+                path += f"&select={query}"
+            return api.get(path)
 
-    resp = session.post(url, json=payload, headers=headers)
-    resp.raise_for_status()
-    data = resp.json()
+    def filter_sort_products(self, api, sort_by: str, order: str = "asc", limit: int = 30,
+                             skip: int = 0):
+        path = f"products?sortBy={sort_by}&order={order}&limit={limit}&skip={skip}"
+        return api.get(path)
 
-    # Cookies (e.g., accessToken) are now stored in session.cookies
-    # You can use `session` for subsequent authenticated calls.
-    return data, session
+    def get_products_by_category(self, api, category: str, limit: int = 30, skip: int = 0,
+                                 sort_by: Optional[str] = None, order: str = "asc"):
+        """
+        Fetch products by category using DummyJSON's /products/category/{category} endpoint,
+        with optional pagination and sorting.
 
-# Example:
-tokens, sess = login_and_get_tokens("emilys", "emilyspass", 30)
-print(tokens)
-r = sess.get(f"{DUMMYJSON_BASE}/auth/me")
-print(r.json())
+        Args:
+            api: APIClient instance exposing .get(path: str)
+            category: category slug (e.g., "smartphones")
+            limit: page size (default 30)
+            skip: offset for pagination (default 0)
+            sort_by: optional field to sort by (e.g., "title", "price", "rating")
+            order: "asc" or "desc" when sort_by is provided
+
+        Returns:
+            API response object from the GET request.
+        """
+        path = f"products/category/{category}?limit={limit}&skip={skip}"
+        if sort_by:
+            path += f"&sortBy={sort_by}&order={order}"
+        return api.get(path)

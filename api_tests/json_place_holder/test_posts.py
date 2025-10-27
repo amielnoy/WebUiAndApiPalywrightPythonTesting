@@ -1,5 +1,5 @@
 from api_tests.globals import ApiHttpConstants
-from api_tests.posts_service import post_requests
+from api_tests.json_place_holder.posts_service import post_requests
 
 
 def test_get_posts_count(api_json_placeholder):
@@ -22,8 +22,8 @@ def test_get_post_number1(api_json_placeholder):
 def test_create_post(api_json_placeholder):
     payload = {
         "userId": 1,
-        "title": "New test post",
-        "body": "This is a body of the test post"
+        "title": "New xyte post",
+        "body": "This is a body of the xyte post"
     }
     pr = post_requests()
     response = pr.create_post(api_json_placeholder, payload)

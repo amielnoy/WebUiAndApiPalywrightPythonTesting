@@ -1,0 +1,89 @@
+name: Run Tests
+
+on:
+  workflow_dispatch:  # 👈 enables manual trigger
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    env:
+      BASE_URL_FE: https://ultimateqa.com/complicated-page  # <-- Set your actual BASE_URL here
+      BASE_URL_API: https://jsonplaceholder.typicode.com
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+          node-version: '22'
+
+    - name: Install Allure Commandline
+      run: npm install -g allure-commandline --save-dev
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m venv .venv
+        source .venv/bin/activate
+        pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Install all Playwright Browsers
+      run: |
+        source .venv/bin/activate
+        python -m playwright install --with-deps
+
+    - name: Create .env file from workflow
+      run: |
+        echo "BASE_URL_FE=${BASE_URL_FE}" > .env
+        echo "BASE_URL_API=${BASE_URL_API}" > .env
+
+    - name: Download previous Allure history
+      run: |
+        git config --global user.email "github-actions@users.noreply.github.com"
+        git config --global user.name "GitHub Actions"
+        git clone --depth=1 --branch gh_pages https://github.com/${{ github.repository }} gh-pages || echo "No previous gh-pages"
+        mkdir -p allure-results/history
+        cp -r gh-pages/history allure-results/ || echo "No history to copy"
+    
+
+    - name: Run tests(UI & API) with Pytest
+      run: |
+        source .venv/bin/activate
+        pytest Ultimateqa/ui_tests api_tests -n auto --alluredir=allure-results
+
+    - name: Generate Allure Report
+      if: always()
+      run: |
+        npx allure generate allure-results --clean -o allure-report
+        sed -i "s|<base href=\"/\">|<base href=\"/${GITHUB_REPOSITORY#*/}/\">|" allure-report/index.html
+    
+    
+
+    - name: Deploy Allure Report to GitHub Pages
+      if: always()
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+          github_token: ${{ secrets.GH_PAGES_ALLURE }}
+          publish_branch: gh_pages
+          publish_dir: ./allure-report
+
+    - name: Output report link
+      if: always()
+      run: |
+            echo "### ✅ [View Allure Report](https://amielnoy.github.io/forcePointPlaywrightPythonTest)" >> $GITHUB_STEP_SUMMARY    
+
+    

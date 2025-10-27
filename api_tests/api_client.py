@@ -2,6 +2,8 @@ import requests
 
 class APIClient:
     BASE_URL_API = None
+    def __init__(self,base_url: str):
+        self.BASE_URL_API = base_url
 
     def get(self, endpoint, params=None):
         return requests.get(f"{self.BASE_URL_API}/{endpoint}", params=params)

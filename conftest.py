@@ -4,20 +4,20 @@ import pytest
 from api_tests.api_client import APIClient
 
 @pytest.fixture(scope="session")
-def api():
-    return APIClient()
+def api_json_placeholder():
+    return APIClient(os.getenv('BASE_URL_API_JPH'))
 
-
-@pytest.fixture(scope='session',autouse=True)
-def base_url_fe():
-    load_dotenv()
-    return  os.getenv('BASE_URL_FE')
+@pytest.fixture(scope="session")
+def api_json_dummy():
+    return APIClient(os.getenv('BASE_URL_API_JSON_DUMMY'))
 
 @pytest.fixture(scope='session',autouse=True)
-def base_url_api():
+def base_url_fe(load_env):
+    return os.getenv('BASE_URL_FE')
+
+@pytest.fixture(scope='session',autouse=True)
+def load_env():
     load_dotenv()
-    APIClient.BASE_URL_API = os.getenv('BASE_URL_API')
-    
 # @pytest.fixture(scope="session")
 # def browser_type_launch_args():
 #     return {
