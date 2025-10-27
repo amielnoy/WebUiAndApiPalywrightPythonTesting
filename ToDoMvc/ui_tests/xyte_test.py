@@ -37,7 +37,3 @@ class TestToDo(BaseTest):
 
 
 
-        print("debug")
-        # todo.item_by_title("item1").click()
-        # todo.delete_item(title)
-        # todo.expect_items([])
