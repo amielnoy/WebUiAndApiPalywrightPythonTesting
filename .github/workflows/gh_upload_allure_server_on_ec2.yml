@@ -15,7 +15,8 @@ jobs:
 
     env:
       BASE_URL_FE: https://ultimateqa.com/complicated-page  # <-- Set your actual BASE_URL here
-      BASE_URL_API: https://jsonplaceholder.typicode.com
+      BASE_URL_API_JPH: https://jsonplaceholder.typicode.com
+      BASE_URL_API_JSON_DUMMY: https://dummyjson.com
 
     steps:
     - name: Checkout code
@@ -49,7 +50,8 @@ jobs:
     - name: Create .env file from workflow
       run: |
         echo "BASE_URL_FE=${BASE_URL_FE}" > .env
-        echo "BASE_URL_API=${BASE_URL_API}" > .env
+        echo "BASE_URL_API_JPH=${BASE_URL_API_JPH}" > .env
+        echo "BASE_URL_API_JSON_DUMMY=${BASE_URL_API_JSON_DUMMY}" > .env
 
     - name: Download previous Allure history
       run: |
