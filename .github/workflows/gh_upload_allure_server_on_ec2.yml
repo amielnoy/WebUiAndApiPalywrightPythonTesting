@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      BASE_URL_FE: https://ultimateqa.com/complicated-page  # <-- Set your actual BASE_URL here
+      BASE_URL_FE: https://demo.playwright.dev/todomvc/#/  # <-- Set your actual BASE_URL here
       BASE_URL_API_JPH: https://jsonplaceholder.typicode.com
       BASE_URL_API_JSON_DUMMY: https://dummyjson.com
 
