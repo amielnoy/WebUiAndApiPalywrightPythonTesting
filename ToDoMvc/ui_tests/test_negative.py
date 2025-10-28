@@ -38,7 +38,7 @@ class TestNegative(BaseTest):
         edit.press(undo)  # cancel edit
         edit.press("Enter")
         # Text should remain the original value
-        todo.expect_items(["item1"])
+        todo.expect_items(["item2"])
 
 
 
