@@ -1,23 +1,11 @@
-playwright
 allure-pytest
-py
-pyee
-pyparsing==3.0.6
 pytest
 pytest-base-url==1.4.2
-pytest-forked==1.4.0
-pytest-playwright
-python-slugify==5.0.2
-pytest-html
 requests
-text-unidecode==1.3
-toml==0.10.2
-tomli==2.0.1
-urllib3==2.5.0
 python-dotenv
 pytest-xdist
 requests
-zipp>=3.19.1 # not directly required, pinned by Snyk to avoid a vulnerability
-fields
-schema
-marshmallow
+Flask==3.0.0
+flask-cors==4.0.0
+Werkzeug==3.0.1
+asserts==0.13.1
