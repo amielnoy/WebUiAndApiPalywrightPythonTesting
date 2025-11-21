@@ -34,7 +34,8 @@ def test_mobile_and_backend_stream_status_are_consistent(
         print("\nurl=" + api_streaming.client.base_url)
         print(f"Testing login with {email} / {'*' * len(password)}")
         step.attach_text("Streaming API base URL", api_streaming.client.base_url)
-        step.attach_text("Test email", email)
+        masked_email = f"{email[:2]}***@{email.split('@')[-1]}"
+        step.attach_text("Test email", masked_email)
 
     with step("Open Welcome page and validate visibility"):
         welcome = get_welcome_page(mobile_session)

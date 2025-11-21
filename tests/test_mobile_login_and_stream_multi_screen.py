@@ -30,7 +30,8 @@ def test_mobile_stream_status(email, password, mobile_session: MobileSession, ap
         print(f"Testing login with: {email} / {'*' * len(password)}")
 
         step.attach_text("Streaming API URL", api_streaming.client.base_url)
-        step.attach_text("Login email", email)
+        masked_email = f"{email[:2]}***@{email.split('@')[-1]}"
+        step.attach_text("Login email", masked_email)
 
     with step("Open Welcome page and validate visibility"):
         welcome = get_welcome_page(mobile_session)
