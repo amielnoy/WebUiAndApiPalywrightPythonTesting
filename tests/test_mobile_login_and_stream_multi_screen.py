@@ -29,10 +29,9 @@ def test_mobile_stream_status(email, password, mobile_session: MobileSession, ap
     if allure:
         allure.dynamic.title(f"mobile stream status validation for {masked_email}")
 
-    with step("Log test configuration and API URL"):
-        print(f"Testing login with: {email} / {'*' * len(password)}")
+    with step("Log test configuration"):
+        print(f"Testing login with: {masked_email} / {'*' * len(password)}")
 
-        step.attach_text("Streaming API URL", api_streaming.client.base_url)
         masked_email = f"{email[:2]}***@{email.split('@')[-1]}"
         step.attach_text("Login email", masked_email)
 

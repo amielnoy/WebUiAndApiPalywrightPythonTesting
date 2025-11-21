@@ -4,7 +4,11 @@ set -euo pipefail
 RESULTS_DIR="allure-results"
 
 echo "[INFO] Removing old allure results..."
-rm -rf "$RESULTS_DIR"
+if [[ "${CLEAR_ALLURE_RESULTS:-1}" == "1" ]]; then
+  rm -rf "$RESULTS_DIR"
+else
+  echo "[INFO] Skipping cleanup of ${RESULTS_DIR} (CLEAR_ALLURE_RESULTS=${CLEAR_ALLURE_RESULTS:-0})"
+fi
 
 echo "[INFO] Running pytest..."
 pytest --alluredir="$RESULTS_DIR" "$@"
