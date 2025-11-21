@@ -1,19 +1,18 @@
-# Testing MOBILE UI using mocked mobile session on 
+# Testing MOBILE UI using mocked mobile session and mocked streaming server
 
 # Testing API's on Mocked streaming server on http://127.0.0.1:8082 
 
 ## See .env for urls
 
-## Instalation(for mac/linux):
+## Instalation(for mac):
 
 1. Install Python 3.12
 2. install pip
-3. Run(install virtual env)
-   python3 -m venv .venv
-   source .venv/bin/activate
-4. pip install -r requirements.txt
-5. brew install allure(for mac only)
-6. run chmod +x /run_tests_and_report_allure.sh
+3. python3 -m venv .venv
+4. source .venv/bin/activate
+5. pip install -r requirements.txt
+6. brew install allure(for mac only)
+7. run chmod +x /run_tests_and_report_allure.sh
 
 ## Run Tests and report Allure report:
 ./run_tests_and_report_allure.sh
