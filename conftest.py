@@ -3,7 +3,6 @@ from __future__ import annotations
 from dotenv import load_dotenv
 
 from infra.api_session import APISession
-from infra.api_client import APIClient
 
 import os
 import pytest
@@ -35,12 +34,12 @@ def mobile_session():
 
 @pytest.fixture(scope="function")
 def api_streaming(load_env):
-    return APISession(os.getenv('BASE_URL_STREAMING'))
+    base_url = os.getenv("BASE_URL_STREAMING")
+    if not base_url:
+        raise RuntimeError("BASE_URL_STREAMING is not set. Please configure it in your environment or .env file.")
+    return APISession(base_url)
 
-@pytest.fixture(scope='function',autouse=True)
-def base_url_streaming(load_env):
-    return os.getenv('BASE_URL_STREAMING')
 
-@pytest.fixture(scope='function',autouse=True)
+@pytest.fixture(scope="function", autouse=True)
 def load_env():
     load_dotenv()
