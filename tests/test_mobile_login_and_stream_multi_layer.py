@@ -77,6 +77,10 @@ def test_mobile_and_backend_stream_status_are_consistent(
         )
 
     with step("Final log – Test passed"):
-        msg = "Test passed: Mobile login and stream status are the same on mobile ui & on streaming."
+        masked_email = f"{email[:2]}***@{email.split('@')[-1]}"
+        msg = (
+            "Test passed: Mobile login and stream status are the same on mobile ui & on streaming "
+            f"for user {masked_email}."
+        )
         print(msg)
         step.attach_text("Final result", msg)

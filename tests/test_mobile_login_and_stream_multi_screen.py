@@ -59,9 +59,11 @@ def test_mobile_stream_status(email, password, mobile_session: MobileSession, ap
         assert ui_status == "streaming"
 
     with step("Final confirmation message"):
+        masked_email = f"{email[:2]}***@{email.split('@')[-1]}"
         message = (
             "Test passed: Mobile login completed successfully and "
-            "stream status = 'streaming' on mobile app."
+            "stream status = 'streaming' on mobile app "
+            f"for user {masked_email}."
         )
         print(message)
         step.attach_text("Final Result", message)
