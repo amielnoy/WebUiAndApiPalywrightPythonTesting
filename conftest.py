@@ -16,32 +16,48 @@ except Exception:
     allure = None
 
 
-@pytest.fixture(scope="function")
-def mobile_session():
+def _create_mobile_session():
     platform = os.getenv("NANIT_PLATFORM", "ios").lower()
     streaming_validator = StreamingValidator()
     session = MobileSession(platform, streaming_validator)
+    return platform, session
+
+
+def _launch_session(session: MobileSession, platform: str):
+    session.launch_app()
+    if allure:
+        allure.attach(
+            platform,
+            name="Mobile Platform",
+            attachment_type=allure.attachment_type.TEXT,
+        )
+    else:
+        print(f"[SETUP] Launch app on platform: {platform}")
+
+
+def _close_session(session: MobileSession):
+    session.close_app()
+    if not allure:
+        print("[TEARDOWN] Close app session")
+
+
+@pytest.fixture(scope="function")
+def mobile_session():
+    platform, session = _create_mobile_session()
 
     if allure:
         with allure.step(f"Launch app on platform: {platform}"):
-            session.launch_app()
-            allure.attach(
-                platform,
-                name="Mobile Platform",
-                attachment_type=allure.attachment_type.TEXT,
-            )
+            _launch_session(session, platform)
     else:
-        print(f"[SETUP] Launch app on platform: {platform}")
-        session.launch_app()
+        _launch_session(session, platform)
 
     yield session
 
     if allure:
         with allure.step("Close app session"):
-            session.close_app()
+            _close_session(session)
     else:
-        print("[TEARDOWN] Close app session")
-        session.close_app()
+        _close_session(session)
 
 
 @pytest.fixture(scope="function")
