@@ -20,13 +20,16 @@ from infra.allure_utils import AllureStep
 @pytest.mark.mobile_ui
 @allure.feature("Mobile UI")
 @allure.story("Login and navigate till stream status Flow")
-@allure.title("mobile stream status validation for {email}")
+@allure.title("mobile stream status validation")
 def test_mobile_stream_status(email, password, mobile_session: MobileSession, api_streaming):
     step = AllureStep("Mobile Stream Status")
-    allure.dynamic.parameter("email", email)
+    masked_email = f"{email[:2]}***@{email.split('@')[-1]}"
+    allure.dynamic.parameter("email", masked_email)
+    allure.dynamic.parameter("password", "*" * len(password))
+    if allure:
+        allure.dynamic.title(f"mobile stream status validation for {masked_email}")
 
     with step("Log test configuration and API URL"):
-        print("url=" + api_streaming.client.base_url)
         print(f"Testing login with: {email} / {'*' * len(password)}")
 
         step.attach_text("Streaming API URL", api_streaming.client.base_url)

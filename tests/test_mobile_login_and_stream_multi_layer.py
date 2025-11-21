@@ -28,10 +28,11 @@ def test_mobile_and_backend_stream_status_are_consistent(
     api_streaming,
 ):
     step = AllureStep("Mobile & Backend Stream Status")
-    allure.dynamic.parameter("email", email)
+    masked_email = f"{email[:2]}***@{email.split('@')[-1]}"
+    allure.dynamic.parameter("email", masked_email)
+    allure.dynamic.parameter("password", "*" * len(password))
 
     with step("Print base URL and test credentials (masked password)"):
-        print("\nurl=" + api_streaming.client.base_url)
         print(f"Testing login with {email} / {'*' * len(password)}")
         step.attach_text("Streaming API base URL", api_streaming.client.base_url)
         masked_email = f"{email[:2]}***@{email.split('@')[-1]}"
