@@ -12,6 +12,16 @@ class StreamMetric(Enum):
 
 
 class StreamingValidator():
+    def fetch_metrics(self, api_streaming):
+        """
+        Fetch full streaming metrics payload in one request.
+
+        Returns the JSON body of GET /health as a dict.
+        """
+        response = api_streaming.get('/health')
+        assert response.status_code == ApiHttpConstants.OK, f"Failed to fetch metrics: {response.status_code}"
+        return response.json()
+
     def fetch_on_metric(self, api_streaming, metric: Union[StreamMetric, str]):
         """
         Fetch streaming data by a given metric.
@@ -32,9 +42,7 @@ class StreamingValidator():
         if metric_value not in allowed:
             raise ValueError(f"Invalid metric '{metric_value}'. Allowed: {sorted(allowed)}")
 
-        response = api_streaming.get('/health')
-        assert response.status_code == ApiHttpConstants.OK, f"Failed to fetch metric: {response.status_code}"
-        response_data = response.json()
+        response_data = self.fetch_metrics(api_streaming)
         return response_data[metric_value]
 
     def set_network_condition(self, api_streaming, network_condition: str):
@@ -45,9 +53,11 @@ class StreamingValidator():
         assert actual_metric_value == expected_metric_value, f"Expected value to be {expected_metric_value}, got {actual_metric_value}"
 
 
-    def validate_network_parameter_degragated(self, before_value,after_value):
-        assert float(before_value) <float(after_value),\
-            f"Expected value to be higher after network degradation, got {before_value} and {after_value}"f"Expected status to be streaming, got before: {before_value} got after: {after_value}"
+    def validate_network_parameter_degraded(self, before_value, after_value, param_name: str = "parameter"):
+        assert float(before_value) < float(after_value), (
+            f"Expected {param_name} to increase after network degradation, "
+            f"got before={before_value}, after={after_value}"
+        )
 
 
     def validate_valid_viewer_number_degrated(self, viewer_number_before, viewer_number_after):
