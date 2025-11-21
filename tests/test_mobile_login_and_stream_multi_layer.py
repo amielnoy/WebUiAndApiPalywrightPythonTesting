@@ -1,14 +1,12 @@
 import pytest
 import allure
 
-from conftest import api_streaming
 from infra.mobile_session import MobileSession
 from mobile_pages.factory import (
     get_welcome_page,
     get_login_page,
     get_live_stream_page,
 )
-from infra.streaming_validator import StreamMetric, StreamingValidator
 from infra.allure_utils import AllureStep
 
 
@@ -22,7 +20,7 @@ from infra.allure_utils import AllureStep
 @pytest.mark.e2e_api_integrated
 @allure.feature("Mobile Streaming")
 @allure.story("Login and Live Stream Status Validation")
-@allure.title("Stream status are consistent between UI and backend")
+@allure.title("Stream status is consistent between UI and backend")
 def test_mobile_and_backend_stream_status_are_consistent(
     email,
     password,
@@ -65,12 +63,15 @@ def test_mobile_and_backend_stream_status_are_consistent(
         api_streaming_validator = mobile_session.api_streaming_validator
         api_streaming_validator.set_network_condition(api_streaming, "normal")
 
-        status = api_streaming_validator.fetch_on_metric(api_streaming, StreamMetric.status)
+        backend_metrics = api_streaming_validator.fetch_metrics(api_streaming)
+        backend_status = backend_metrics.get("status")
+        ui_status_final = live.get_stream_status()
 
-        step.attach_text("Backend streaming status", status)
-        step.attach_text("UI streaming status (before final assert)", live.get_stream_status())
+        step.attach_text("Backend streaming status", backend_status)
+        step.attach_text("UI streaming status (before final assert)", ui_status)
+        step.attach_text("UI streaming status (final)", ui_status_final)
 
-        assert live.get_stream_status() == status, (
+        assert ui_status_final == backend_status, (
             "error streaming status is not identical in mobile ui & on streaming"
         )
 
